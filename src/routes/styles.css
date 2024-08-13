@@ -1,0 +1,11 @@
+.topbar {
+    @apply bg-gray-800 h-10 w-full;
+}
+
+main {
+    @apply bg-gray-500 w-full;
+}
+
+.bottombar {
+    @apply bg-gray-800 w-full h-14;
+}
