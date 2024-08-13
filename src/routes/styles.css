@@ -1,5 +1,5 @@
 .topbar {
-    @apply bg-gray-800 h-10 w-full;
+    @apply bg-gray-800 h-10 w-full flex flex-row items-center;
 }
 
 main {

@@ -3,33 +3,17 @@
 	import './styles.css';
 </script>
 
-<div class="topbar"></div>
+<div class="topbar">
+	<img src="https://picsum.photos/200" alt="Logo" class="logo w-5 h-5 m-4" />
+	<h1 class="title text-gray-400 p">NIP Bank Verifier</h1>
+</div>
+
 <main class="">
 	<slot />
 </main>
 
-<!-- <footer class="bg-white rounded-lg shadow m-4 dark:bg-gray-800 mt-auto h-min"> -->
-<footer class="mt-auto">
+<footer class="mt-auto bottombar">
 	<div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-		<span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
-			>© 2023 <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>. All Rights
-			Reserved.
-		</span>
-		<ul
-			class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0"
-		>
-			<li>
-				<a href="#" class="hover:underline me-4 md:me-6">About</a>
-			</li>
-			<li>
-				<a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
-			</li>
-			<li>
-				<a href="#" class="hover:underline me-4 md:me-6">Licensing</a>
-			</li>
-			<li>
-				<a href="#" class="hover:underline">Contact</a>
-			</li>
-		</ul>
+		<span class="text-sm text-gray-400 sm:text-center dark:text-gray-400">Made with SvelteKit</span>
 	</div>
 </footer>
