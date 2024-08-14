@@ -1,74 +1,80 @@
 <script>
-    let results = [
-        {
-            nip: '1231231212',
-            name: 'Nazwa podatnika',
-            address: 'Jarzębinowa 10, 00-000 Warszawa',
-            account: '11 1234 1234 1234 1234 1234 1234',
-            status: 'Dane zgodne',
-            color: 'bg-green-100',
-            icon: '✔️',
-            action: 'Pobierz potwierdzenie',
-            link: 'Link do oryginału'
-        },
-        {
-            nip: '1231231212',
-            name: 'Nazwa podatnika',
-            address: 'Jarzębinowa 10, 00-000 Warszawa',
-            account: '11 1234 1234 1234 1234 1234 1234',
-            status: 'Do weryfikacji',
-            color: 'bg-gray-200',
-            icon: '📄',
-            action: 'Pobierz potwierdzenie',
-            link: 'Link do oryginału'
-        },
-        {
-            nip: '1231231212',
-            name: 'Nazwa podatnika',
-            address: 'Jarzębinowa 10, 00-000 Warszawa',
-            account: '11 1234 1234 1234 1234 1234 1234',
-            status: 'Brak zgodności',
-            color: 'bg-red-100',
-            icon: '❌',
-            action: 'Pobierz potwierdzenie',
-            link: 'Link do oryginału'
-        }
-    ];
+	let rows = [
+		{ id: 1, value1: '', value2: '', active: true },
+		{ id: 2, value1: '', value2: '', active: false }
+	];
+
+	/**
+	 * @param {number} index
+	 */
+	function activateRow(index) {
+		if ((rows[index].value1 || rows[index].value2) && !rows[index + 1].active) {
+			rows[index + 1].active = true;
+			rows.push({ id: rows.length + 1, value1: '', value2: '', active: false });
+		}
+	}
+
+	function handleSubmit() {
+		alert('Form submitted!');
+		console.log(rows);
+	}
 </script>
 
 <div class="container mx-auto p-4">
-    <div class="bg-white shadow-md rounded-lg">
-        <h1 class="text-xl font-bold p-4">Wyniki wyszukiwania</h1>
-        <div class="space-y-4 p-4">
-            {#each results as result}
-                <div class={`p-4 rounded-lg ${result.color} border border-gray-300`}>
-                    <div class="flex flex-col space-y-4 sm:space-y-0 sm:flex-row justify-between items-start sm:items-center">
-                        <div class="flex-1">
-                            <div class="flex flex-wrap sm:flex-nowrap sm:space-x-8">
-                                <div>
-                                    <p class="font-bold">NIP {result.nip}</p>
-                                    <p>{result.name}</p>
-                                    <p>{result.address}</p>
-                                </div>
-                                <div class="mt-2 sm:mt-0">
-                                    <p class="text-lg font-semibold">Numer konta {result.account}</p>
-                                    <p>Jest to jedyne konto podmiotu.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mt-4 sm:mt-0">
-                            <div class="flex items-center space-x-2">
-                                <span>{result.icon}</span>
-                                <p>{result.status}</p>
-                            </div>
-                            <div class="flex flex-col items-start sm:items-end text-blue-500 underline">
-                                <button>{result.action}</button>
-                                <button>{result.link}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {/each}
-        </div>
-    </div>
+	<h1 class="text-xl font-bold mb-4">Zweryfikuj podmiot</h1>
+	<form on:submit|preventDefault={handleSubmit}>
+		<div class="space-y-4">
+			{#each rows as row, index}
+				<div class="flex space-x-4 items-center">
+					<div class="flex flex-1">
+						<input
+							type="text"
+							bind:value={row.value1}
+							placeholder="NIP/REGON/KRS"
+							on:input={() => activateRow(index)}
+							disabled={!row.active}
+                            class="rounded-l-lg"
+                            />
+						<span
+							class="flex items-center px-4 bg-gray-200 text-gray-700 border border-gray-300 rounded-r-lg"
+						>
+							NIP
+						</span>
+					</div>
+					<input
+						type="text"
+						bind:value={row.value2}
+						placeholder="Numer konta bankowego"
+                        class="rounded-lg"
+						on:input={() => activateRow(index)}
+						disabled={!row.active}
+					/>
+				</div>
+			{/each}
+		</div>
+		<div class="mt-4">
+			<button
+				type="submit"
+				class="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed"
+				disabled={!rows.some(row => row.value1 || row.value2)}
+			>
+				Submit
+			</button>
+		</div>
+	</form>
 </div>
+
+<style lang="postcss">
+	input[disabled] {
+		@apply bg-gray-100;
+	}
+	input {
+		@apply flex-1 p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500;
+	}
+	button[disabled] {
+		@apply bg-gray-300 cursor-not-allowed;
+	}
+	button {
+		@apply px-4 py-2 bg-blue-500 text-white rounded-lg;
+	}
+</style>
