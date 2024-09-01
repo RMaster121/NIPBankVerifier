@@ -1,23 +1,28 @@
-<script>
+<script lang='ts'>
+	import type { Search } from '$lib/models/Search';
+	import { sendRequest } from './sendRequest';
 	let rows = [
-		{ id: 1, value1: '', value2: '', active: true },
-		{ id: 2, value1: '', value2: '', active: false }
+		{ id: 1, id_value: '', bank_number: '', active: true },
+		{ id: 2, id_value: '', bank_number: '', active: false }
 	];
 
-	/**
-	 * @param {number} index
-	 */
-	function activateRow(index) {
-		if ((rows[index].value1 || rows[index].value2) && !rows[index + 1].active) {
+	function activateRow(index: number) {
+		if ((rows[index].id_value || rows[index].bank_number) && !rows[index + 1].active) {
 			rows[index + 1].active = true;
-			rows.push({ id: rows.length + 1, value1: '', value2: '', active: false });
+			rows.push({ id: rows.length + 1, id_value: '', bank_number: '', active: false });
 		}
 	}
 
 	function handleSubmit() {
-		alert('Form submitted!');
-		console.log(rows);
-	}
+		const searches: Search[] = rows.map(row => {
+			return {
+				id_type: 'NIP',
+				id_value: row.id_value,
+				bank_account: row.bank_number
+			};
+		});
+		sendRequest(searches);
+}
 </script>
 
 <div class="container mx-auto p-4">
@@ -29,7 +34,7 @@
 					<div class="flex flex-1">
 						<input
 							type="text"
-							bind:value={row.value1}
+							bind:value={row.id_value}
 							placeholder="NIP/REGON/KRS"
 							on:input={() => activateRow(index)}
 							disabled={!row.active}
@@ -43,7 +48,7 @@
 					</div>
 					<input
 						type="text"
-						bind:value={row.value2}
+						bind:value={row.bank_number}
 						placeholder="Numer konta bankowego"
                         class="rounded-lg"
 						on:input={() => activateRow(index)}
@@ -56,7 +61,7 @@
 			<button
 				type="submit"
 				class="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed"
-				disabled={!rows.some(row => row.value1 || row.value2)}
+				disabled={!rows.some(row => row.id_value || row.bank_number)}
 			>
 				Submit
 			</button>
