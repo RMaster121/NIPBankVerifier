@@ -2,36 +2,6 @@
 	import type { Result } from '$lib/models/Result';
 	import type { PageData } from './$types';
 
-	let results1 = [
-		{
-			nip: '1231231212',
-			name: 'Nazwa podatnika',
-			address: 'Jarzębinowa 10, 00-000 Warszawa',
-			account: '11 1234 1234 1234 1234 1234 1234',
-			status: 'Dane zgodne',
-			color: 'bg-green-100',
-			icon: '✔️'
-		},
-		{
-			nip: '1231231212',
-			name: 'Nazwa podatnika',
-			address: 'Jarzębinowa 10, 00-000 Warszawa',
-			account: '11 1234 1234 1234 1234 1234 1234',
-			status: 'Do weryfikacji',
-			color: 'bg-gray-200',
-			icon: '📄'
-		},
-		{
-			nip: '1231231212',
-			name: 'Nazwa podatnika',
-			address: 'Jarzębinowa 10, 00-000 Warszawa',
-			account: '11 1234 1234 1234 1234 1234 1234',
-			status: 'Brak zgodności',
-			color: 'bg-red-100',
-			icon: '❌'
-		}
-	];
-
 	function is_veryfied(result: Result): boolean {
 		return result.company.bank_accounts.includes(result.search.bank_account);
 	}

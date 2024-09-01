@@ -1,5 +1,6 @@
 <script lang='ts'>
 	import type { Search } from '$lib/models/Search';
+	import { sendRequest } from './sendRequest';
 	let rows = [
 		{ id: 1, id_value: '', bank_number: '', active: true },
 		{ id: 2, id_value: '', bank_number: '', active: false }
@@ -20,8 +21,8 @@
 				bank_account: row.bank_number
 			};
 		});
-		console.log(searches);
-	}
+		sendRequest(searches);
+}
 </script>
 
 <div class="container mx-auto p-4">
