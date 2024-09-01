@@ -1,9 +1,10 @@
 import { goto } from "$app/navigation";
+import type { Result } from "$lib/models/Result";
 import type { Search } from "$lib/models/Search";
 import { apiResult } from "$lib/store";
 
 export async function sendRequest(searches: Search[]): Promise<void> {
-    apiResult.set([
+    apiResult.set(<Result[]>[
         {
 			search: {
 				id_type: 'NIP',
