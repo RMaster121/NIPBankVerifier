@@ -3,8 +3,8 @@
 	import Footer from '$lib/Generic/Footer.svelte';
 </script>
 
-<main class="">
+<main class="h-screen flex flex-col justify-between">
 	<slot />
+	<Footer />
 </main>
 
-<Footer />
