@@ -21,7 +21,8 @@
 				bank_account: row.bank_number
 			};
 		});
-		sendRequest(searches);
+		const non_empty_searches = searches.filter(search => search.id_value || search.bank_account);
+		sendRequest(non_empty_searches);
 }
 </script>
 
