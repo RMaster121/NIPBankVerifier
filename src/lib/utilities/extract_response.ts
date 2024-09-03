@@ -8,7 +8,7 @@ interface Subject {
 	accountNumbers: string[];
 }
 
-function extractSubjectDetails(response) {
+export function extractSubjectDetails(response) {
 	const { name, nip, workingAddress, regon, accountNumbers } = response.result.subject;
 
 	return {
