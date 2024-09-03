@@ -63,5 +63,5 @@ export function identifyNumber(number: string): string {
 	if (isNIP(number)) {
 		return 'NIP';
 	}
-	return 'Unknown';
+	throw new Error('Invalid number');
 }
