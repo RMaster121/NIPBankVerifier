@@ -30,16 +30,6 @@ describe('identifyNumber', () => {
         });
     });
 
-    describe('KRS', () => {
-        it('should identify a valid KRS number', () => {
-            expect(identifyNumber('0000001234')).toBe('KRS');
-        });
-
-        it('should return "Unknown" for an invalid KRS number', () => {
-            expect(identifyNumber('1123456789')).toBe('Unknown');
-        });
-    });
-
     describe('Invalid Length', () => {
         it('should return "Unknown" for a number with invalid length', () => {
             expect(identifyNumber('123')).toBe('Unknown');

@@ -3,7 +3,6 @@ How that even works?
 There are 3 types of numbers that can be validated:
 - NIP (Numer Identyfikacji Podatkowej)
 - REGON (Rejestr Gospodarki Narodowej)
-- KRS (Krajowy Rejestr Sądowy)
 
 How to validate them?
 NIP:
@@ -16,11 +15,6 @@ REGON:
 - For 9 digits REGON, the last digit is a checksum
 - For 14 digits REGON, the last digit is a checksum
 
-KRS:
-- KRS consists of 10 digits
-- The first digit is 0
-
-If NIP is valid, it's most likely a NIP number - we don't need to check for KRS
 */
 
 function validateNIPChecksum(nip: string): boolean {
@@ -62,19 +56,12 @@ function isNIP(number: string): boolean {
 	return number.length === 10 && validateNIPChecksum(number);
 }
 
-function isKRS(number: string): boolean {
-	return number.length === 10 && number[0] === '0';
-}
-
 export function identifyNumber(number: string): string {
 	if (isLongREGON(number) || isShortREGON(number)) {
 		return 'REGON';
 	}
 	if (isNIP(number)) {
 		return 'NIP';
-	}
-	if (isKRS(number)) {
-		return 'KRS';
 	}
 	return 'Unknown';
 }

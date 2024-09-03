@@ -35,21 +35,6 @@ export async function sendRequest(searches: Search[]): Promise<void> {
         },
         {
             search: {
-                id_type: 'KRS',
-                id_value: '123456',
-                bank_account: '33 3333 3333 3333 3333 3333 3333'
-            },
-            company: {
-                bank_accounts: [
-                    '33 3333 3333 3333 3333 3333 3333',
-                    '33 3333 3333 3333 3333 3333 3334'
-                ],
-                name: 'Kolejna firma',
-                address: 'Kwiatowa 2, 11-111 Kraków'
-            }
-        },
-        {
-            search: {
                 id_type: 'REGON',
                 id_value: '987654321',
                 bank_account: '44 4444 4444 4444 4444 4444 4444'

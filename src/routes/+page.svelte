@@ -35,7 +35,7 @@
 						<input
 							type="text"
 							bind:value={row.id_value}
-							placeholder="NIP/REGON/KRS"
+							placeholder="NIP/REGON"
 							on:input={() => activateRow(index)}
 							disabled={!row.active}
                             class="rounded-l-lg"
