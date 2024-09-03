@@ -1,6 +1,8 @@
 <script lang='ts'>
 	import type { Search } from '$lib/models/Search';
-	import { sendRequest } from '../lib/utilities/send_request';
+	import { sendRequest } from '$lib/utilities/send_request';
+	import { identifyNumber } from '$lib/utilities/input_type'
+
 	let rows = [
 		{ id: 1, id_value: '', bank_number: '', active: true },
 		{ id: 2, id_value: '', bank_number: '', active: false }
@@ -44,7 +46,7 @@
 						<span
 							class="flex items-center px-4 bg-gray-200 text-gray-700 border border-gray-300 rounded-r-lg"
 						>
-							NIP
+							{identifyNumber(row.id_value)}
 						</span>
 					</div>
 					<input
