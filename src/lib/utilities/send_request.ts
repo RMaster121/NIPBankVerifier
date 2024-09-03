@@ -16,7 +16,9 @@ export async function sendRequest(searches: Search[]): Promise<void> {
                     '11 1111 1111 1111 1111 1111 1111'
                 ],
 				name: 'Przykładowa firma',
-				address: 'Jarzębinowa 1, 00-000 Warszawa'
+				address: 'Jarzębinowa 1, 00-000 Warszawa',
+                nip_value: '0123456789',
+                regon_value: '011918353'
 			}
 		},
         {
@@ -30,7 +32,9 @@ export async function sendRequest(searches: Search[]): Promise<void> {
                     '22 2222 2222 2222 2222 2222 2222'
                 ],
                 name: 'Inna firma',
-                address: 'Kwiatowa 2, 11-111 Kraków'
+                address: 'Kwiatowa 2, 11-111 Kraków',
+                nip_value: '0123456789',
+                regon_value: '011918353'
             }
         },
         {
@@ -42,7 +46,9 @@ export async function sendRequest(searches: Search[]): Promise<void> {
             company: {
                 bank_accounts: [],
                 name: 'Ostatnia firma',
-                address: 'Kwiatowa 2, 11-111 Kraków'
+                address: 'Kwiatowa 2, 11-111 Kraków',
+                nip_value: '0123456789',
+                regon_value: '011918353'
             }
         }
     ]);
