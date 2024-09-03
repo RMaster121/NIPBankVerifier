@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import type { Search } from '$lib/models/Search';
-	import { sendRequest } from './sendRequest';
+	import { sendRequest } from '../lib/utilities/send_request';
 	let rows = [
 		{ id: 1, id_value: '', bank_number: '', active: true },
 		{ id: 2, id_value: '', bank_number: '', active: false }
