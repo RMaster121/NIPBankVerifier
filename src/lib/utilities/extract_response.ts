@@ -19,6 +19,3 @@ export function extractSubjectDetails(response) {
 		accountNumbers
 	};
 }
-
-const details = extractSubjectDetails(response);
-console.log(details);
