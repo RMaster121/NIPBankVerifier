@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Result } from '$lib/models/Result';
 	import type { PageData } from './$types';
+	import { generatePDF } from '$lib/utilities/generate_pdf'
 
 	function is_veryfied(result: Result): boolean {
 		return result.company.bank_accounts.includes(result.search.bank_account);
@@ -98,7 +99,7 @@
 								<p>{get_status(result)}</p>
 							</div>
 							<div class="flex flex-col items-start sm:items-end text-blue-500 underline">
-								<button>Pobierz potwierdzenie</button>
+								<button on:click={() => generatePDF(result)}>Pobierz potwierdzenie</button>
 							</div>
 						</div>
 					</div>
