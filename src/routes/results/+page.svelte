@@ -40,8 +40,6 @@
 				'Podane konto jest jednym z ' + result.company.bank_accounts.length + ' kont powiązanych z podmiotem.'
 			);
 		}
-		console.log(result.company)
-		console.log(is_veryfied(result))
         return 'Podane konto jest jedynym kontem powiązanym z podmiotem.';
 		
 	}
@@ -80,7 +78,6 @@
 							</div>
 							<div class="flex flex-col items-start sm:items-end text-blue-500 underline">
 								<button>Pobierz potwierdzenie</button>
-								<button>Link do oryginału</button>
 							</div>
 						</div>
 					</div>

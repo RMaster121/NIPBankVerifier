@@ -48,7 +48,7 @@
                             class="rounded-l-lg"
                             />
                         <span
-                            class="flex items-center px-4 bg-gray-200 text-gray-700 border border-gray-300 rounded-r-lg"
+                            class="w-28 flex items-center px-4 bg-gray-200 text-gray-700 border border-gray-300 rounded-r-lg"
                         >
                             {identifyNumber(row.id_value)}
                         </span>
