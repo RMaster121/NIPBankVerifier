@@ -10,8 +10,8 @@ export const load: PageLoad = async ({ params }) => {
                 goto('/');
             }
             resolve(value);
-            unsubscribe();
         });
+        unsubscribe();
     });
 
     return { result };

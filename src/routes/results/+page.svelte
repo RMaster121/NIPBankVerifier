@@ -40,6 +40,8 @@
 				'Podane konto jest jednym z ' + result.company.bank_accounts.length + ' kont powiązanych z podmiotem.'
 			);
 		}
+		console.log(result.company)
+		console.log(is_veryfied(result))
         return 'Podane konto jest jedynym kontem powiązanym z podmiotem.';
 		
 	}

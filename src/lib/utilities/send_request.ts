@@ -12,12 +12,13 @@ export async function sendRequest(searches: Search[]): Promise<void> {
             searches.map(async (search) => {
                 const response = await call_api(identifyNumber(search.id_value), search.id_value);
                 const data = await response.json();
+                console.log(data)
                 const subjectDetails = extractSubjectDetails(data);
 
                 return {
                     search,
                     company: {
-                        bank_accounts: [search.bank_account],
+                        bank_accounts: subjectDetails.accountNumbers || [],
                         name: subjectDetails.name,
                         address: subjectDetails.workingAddress,
                         nip_value: subjectDetails.nip,
