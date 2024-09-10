@@ -1,18 +1,6 @@
 import type { Result } from './../models/Result';
 import jsPDF from 'jspdf';
-
-function formatBankAccount(account: string): string {
-	const formatted = [
-		account.slice(0, 2),
-		account.slice(2, 6),
-		account.slice(6, 10),
-		account.slice(10, 14),
-		account.slice(14, 18),
-		account.slice(18, 22),
-		account.slice(22, 26)
-	].join(' ');
-	return formatted;
-}
+import { formatBankAccount } from './format';
 
 export function generatePDF(result: Result): void {
 	const doc = new jsPDF();
