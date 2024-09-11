@@ -1,18 +1,24 @@
 import type { Result } from './../models/Result';
 import jsPDF from 'jspdf';
 import { formatBankAccount } from './format';
+import { callAddFont } from '$lib/Roboto-Regular-normal';
+
 
 export function generatePDF(result: Result): void {
+	jsPDF.API.events.push(['addFonts', callAddFont]);
+
+	let font = 'Roboto-Regular';
+
 	const doc = new jsPDF();
 
 	// Set the title
-	doc.setFont('helvetica', 'bold');
+	doc.setFont(font, 'bold');
 	doc.setFontSize(20);
 	doc.text('Raport - weryfikacja danych podmiotu', 20, 20);
 
 	// Add the date
 	doc.setFontSize(14);
-	doc.setFont('helvetica', 'normal');
+	doc.setFont(font, 'normal');
 	doc.text(`Data: ${new Date().toLocaleDateString()}`, 20, 28);
 
 	// Add a horizontal line as a spacer
@@ -21,9 +27,9 @@ export function generatePDF(result: Result): void {
 
 	// Add full name
 	doc.setFontSize(16);
-	doc.setFont('helvetica', 'bold');
+	doc.setFont(font, 'bold');
 	doc.text('Nazwa podmiotu', 20, 43);
-	doc.setFont('helvetica', 'normal');
+	doc.setFont(font, 'normal');
 	doc.setFontSize(18);
 	doc.text(result.company.name, 20, 53);
 
@@ -33,13 +39,13 @@ export function generatePDF(result: Result): void {
 
 	// Add NIP, REGON, and address header
 	doc.setFontSize(14);
-	doc.setFont('helvetica', 'bold');
+	doc.setFont(font, 'bold');
 	doc.text('NIP', 20, 68);
 	doc.text('REGON', 60, 68);
 	doc.text('Adres siedziby', 110, 68);
 
 	// Add NIP, REGON, and address values
-	doc.setFont('helvetica', 'normal');
+	doc.setFont(font, 'normal');
 	doc.text(result.company.nip_value, 20, 78);
 	doc.text(result.company.regon_value, 60, 78);
 	doc.text(result.company.address, 110, 78);
@@ -49,20 +55,20 @@ export function generatePDF(result: Result): void {
 	doc.line(20, 83, 190, 83);
 
 	// Add "Konta bankowe podmiotu" header
-	doc.setFont('helvetica', 'bold');
+	doc.setFont(font, 'bold');
 	doc.text('Konta bankowe podmiotu', 20, 93);
 
 	// Add bank accounts
-	doc.setFont('helvetica', 'normal');
+	doc.setFont(font, 'normal');
 	doc.setFontSize(14);
 
 	// Dynamically add each bank account
 	result.company.bank_accounts.forEach((account, index) => {
 		const yPos = 103 + index * 10; // Start at y = 103 and add 10 for each account
 		if (account == result.search.bank_account && result.company.bank_accounts.length > 1) {
-			doc.setFont('helvetica', 'bold');
+			doc.setFont(font, 'bold');
 			doc.text(`- ${formatBankAccount(account)}`, 20, yPos);
-			doc.setFont('helvetica', 'normal');
+			doc.setFont(font, 'normal');
 		}
 		doc.text(`- ${formatBankAccount(account)}`, 20, yPos);
 	});
