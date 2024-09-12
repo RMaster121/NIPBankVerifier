@@ -14,59 +14,71 @@ export function generatePDF(result: Result): void {
 
 	const doc = new jsPDF();
 
+	let yGlobal = 20
+
 	// Set the title
 	doc.setFont(fontBold, 'normal');
 	doc.setFontSize(20);
-	doc.text('Raport - weryfikacja danych podmiotu', 20, 20);
+	doc.text('Raport - weryfikacja danych podmiotu', 20, yGlobal);
 
 	// Add the date
 	doc.setFontSize(14);
 	doc.setFont(font, 'normal');
-	doc.text(`Data: ${new Date().toLocaleDateString()}`, 20, 28);
+	yGlobal += 8
+	doc.text(`Data: ${new Date().toLocaleDateString()}`, 20, yGlobal);
 
 	// Add a horizontal line as a spacer
 	doc.setDrawColor(150);
-	doc.line(20, 33, 190, 33);
+	yGlobal += 5
+	doc.line(20, yGlobal, 190, yGlobal);
 
 	// Add full name
 	doc.setFontSize(16);
 	doc.setFont(fontBold, 'normal');
-	doc.text('Nazwa podmiotu', 20, 43);
+	yGlobal += 10
+	doc.text('Nazwa podmiotu', 20, yGlobal);
 	doc.setFont(font, 'normal');
 	doc.setFontSize(18);
-	doc.text(result.company.name, 20, 53);
+	let splitText = doc.splitTextToSize(result.company.name, 170);
+	yGlobal += 10
+	doc.text(splitText, 20, yGlobal);
+	yGlobal += splitText.length * 5 + 5
 
 	// Horizontal line separator
 	doc.setDrawColor(150);
-	doc.line(20, 58, 190, 58);
+	doc.line(20, yGlobal, 190, yGlobal);
 
 	// Add NIP, REGON, and address header
 	doc.setFontSize(14);
 	doc.setFont(fontBold, 'normal');
-	doc.text('NIP', 20, 68);
-	doc.text('REGON', 60, 68);
-	doc.text('Adres siedziby', 110, 68);
+	yGlobal += 10
+	doc.text('NIP', 20, yGlobal);
+	doc.text('REGON', 60, yGlobal);
+	doc.text('Adres siedziby', 110, yGlobal);
 
 	// Add NIP, REGON, and address values
+	yGlobal += 10
 	doc.setFont(font, 'normal');
-	doc.text(result.company.nip_value, 20, 78);
-	doc.text(result.company.regon_value, 60, 78);
-	doc.text(result.company.address, 110, 78);
+	doc.text(result.company.nip_value, 20, yGlobal);
+	doc.text(result.company.regon_value, 60, yGlobal);
+	doc.text(result.company.address, 110, yGlobal);
 
 	// Horizontal line separator
+	yGlobal += 5
 	doc.setDrawColor(150);
-	doc.line(20, 83, 190, 83);
+	doc.line(20, yGlobal, 190, yGlobal);
 
 	// Add "Konta bankowe podmiotu" header
+	yGlobal += 10
 	doc.setFont(fontBold, 'normal');
-	doc.text('Konta bankowe podmiotu', 20, 93);
+	doc.text('Konta bankowe podmiotu', 20, yGlobal);
 
 	// Add bank accounts
 	doc.setFont(font, 'normal');
 	doc.setFontSize(14);
 
 	// Dynamically add each bank account
-	let yIndex = 103;
+	let yIndex = yGlobal + 10;
 	for (let i in result.company.bank_accounts) {
 		const account = result.company.bank_accounts[i];
 		if (account == result.search.bank_account && result.company.bank_accounts.length > 1) {
