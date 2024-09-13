@@ -30,7 +30,7 @@
 		sendRequest(searches);
 	}
 
-	function addRow() {
+	function addRow(id_value: string, bank_account: string) {
 		const formContainer = document.getElementById('form-container');
 		const newRow = document.createElement('div');
 		newRow.classList.add('flex', 'space-x-4', 'items-center', 'mt-2');
@@ -42,6 +42,12 @@
     `;
 		formContainer?.appendChild(newRow);
 
+		if (id_value && bank_account) {
+			const inputs = newRow.querySelectorAll('input');
+			inputs[0].value = id_value;
+			inputs[1].value = bank_account;
+		}
+
 		const removeButton = newRow.querySelector('button');
 		removeButton?.addEventListener('click', removeRow);
 	}
@@ -50,7 +56,24 @@
 		(event.target as HTMLButtonElement).parentElement?.remove();
 	}
 
-	function importExcel() {}
+	function importExcel() {
+		const excelData = (document.getElementById('excel-data') as HTMLTextAreaElement).value;
+		const rows = excelData.split('\n');
+		rows.forEach((row) => {
+			const [id_value, bank_account] = row.split('\t');
+			if (id_value && bank_account) {
+				addRow(id_value, bank_account);
+			}
+		});
+		const formContainer = document.getElementById('form-container');
+		if (formContainer?.children[0]) {
+			const inputs = formContainer.children[0].querySelectorAll('input');
+			if (!inputs[0].value && !inputs[1].value) {
+				formContainer.children[0].remove();
+			}
+		}
+		closeDialog();
+	}
 </script>
 
 <div class="container mx-auto p-4">
@@ -76,7 +99,8 @@
 </div>
 
 {#if showDialog}
-	<button class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50" on:click={closeDialog}></button>
+	<button class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50" on:click={closeDialog}
+	></button>
 	<div
 		class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 shadow-lg rounded-lg flex flex-col items-center justify-center"
 	>
@@ -98,18 +122,32 @@
 				</g>
 			</svg>
 
-			<p class="text-center text-gray-600 text-sm mt-3">
-				<strong>Obsługiwane formaty:<br /></strong>
-				Microsoft Excel (XLS, XLSX)<br />
-				CSV, TXT (spacje lub przecinki)
+			<p class="text-center text-gray-600 font-bold mt-4">
+				Wklej dane z Excela lub wybierz plik do importu
 			</p>
 
-			<div class="mt-6 w-full flex flex-row">
+			<textarea
+				class="mt-4 w-full h-24 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+				placeholder="Wklej dane z Excela w formacie 
+| NIP/REGON | Numer konta bankowego |"
+				id="excel-data"
+			></textarea>
+
+			<p class="text-center text-gray-600 my-2">lub</p>
+
+			<div class="w-full flex flex-row">
 				<input
 					type="file"
+					id="file-upload"
 					class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 hover:file:bg-gray-200"
 				/>
 			</div>
+
+			<p class="text-center text-gray-600 text-sm mt-1">
+				<strong>Obsługiwane formaty plików:<br /></strong>
+				Microsoft Excel (XLS, XLSX)<br />
+				CSV, TXT (spacje lub przecinki)
+			</p>
 
 			<button
 				class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
