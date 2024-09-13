@@ -64,8 +64,12 @@
 				const data = e.target?.result as string;
 				const rows = data.split('\n');
 				rows.forEach((row) => {
-					const [id_value, bank_account] = row.split(',');
-					if (id_value && bank_account) {
+					console.log(row);
+					const columns = row.split(/[,;:]/);
+					console.log(columns);
+					if (columns.length >= 2) {
+						const id_value = cleanInput(columns[0]);
+						const bank_account = cleanInput(columns[1]);
 						addRow(null, id_value, bank_account);
 					}
 				});
@@ -82,12 +86,11 @@
 				const data = e.target?.result as ArrayBuffer;
 				const workbook = XLSX.read(data, { type: 'array' });
 				const sheet = workbook.Sheets[workbook.SheetNames[0]];
-				const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Read as array of arrays
-
+				const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 				rows.forEach((row: any) => {
 					const [id_value, bank_account] = row;
 					if (id_value && bank_account) {
-						addRow(null, id_value, bank_account);
+						addRow(null, cleanInput(id_value), cleanInput(bank_account));
 					}
 				});
 			};
@@ -115,7 +118,7 @@
 		rows.forEach((row) => {
 			const [id_value, bank_account] = row.split('\t');
 			if (id_value && bank_account) {
-				addRow(null, id_value, bank_account);
+				addRow(null, cleanInput(id_value), cleanInput(bank_account));
 			}
 		});
 		removeEmptyRow();
