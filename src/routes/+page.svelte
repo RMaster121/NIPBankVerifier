@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Search } from '$lib/models/Search';
 	import { sendRequest } from '$lib/utilities/send_request';
-
+	import * as XLSX from 'xlsx';
 	let showDialog = false;
 
 	function openDialog() {
@@ -30,7 +30,7 @@
 		sendRequest(searches);
 	}
 
-	function addRow(id_value: string, bank_account: string) {
+	function addRow(_: any, id_value: string = '', bank_account: string = '') {
 		const formContainer = document.getElementById('form-container');
 		const newRow = document.createElement('div');
 		newRow.classList.add('flex', 'space-x-4', 'items-center', 'mt-2');
@@ -56,23 +56,79 @@
 		(event.target as HTMLButtonElement).parentElement?.remove();
 	}
 
+	function handleCSVUpload(event: Event) {
+		const file = (event.target as HTMLInputElement).files?.[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				const data = e.target?.result as string;
+				const rows = data.split('\n');
+				rows.forEach((row) => {
+					const [id_value, bank_account] = row.split(',');
+					if (id_value && bank_account) {
+						addRow(null, id_value, bank_account);
+					}
+				});
+			};
+			reader.readAsText(file);
+		}
+	}
+
+	function handleXLSXUpload(event: Event) {
+		const file = (event.target as HTMLInputElement).files?.[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				const data = e.target?.result as ArrayBuffer;
+				const workbook = XLSX.read(data, { type: 'array' });
+				const sheet = workbook.Sheets[workbook.SheetNames[0]];
+				const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Read as array of arrays
+
+				rows.forEach((row: any) => {
+					const [id_value, bank_account] = row;
+					if (id_value && bank_account) {
+						addRow(null, id_value, bank_account);
+					}
+				});
+			};
+			reader.readAsArrayBuffer(file);
+		}
+	}
+
+	function handleFileUpload(event: Event) {
+		const file = (event.target as HTMLInputElement).files?.[0];
+		if (file) {
+			const extension = file.name.split('.').pop();
+			if (extension === 'csv' || extension === 'txt') {
+				handleCSVUpload(event);
+			} else if (extension === 'xls' || extension === 'xlsx') {
+				handleXLSXUpload(event);
+			}
+		}
+		removeEmptyRow();
+		closeDialog();
+	}
+
 	function importExcel() {
 		const excelData = (document.getElementById('excel-data') as HTMLTextAreaElement).value;
 		const rows = excelData.split('\n');
 		rows.forEach((row) => {
 			const [id_value, bank_account] = row.split('\t');
 			if (id_value && bank_account) {
-				addRow(id_value, bank_account);
+				addRow(null, id_value, bank_account);
 			}
 		});
-		const formContainer = document.getElementById('form-container');
-		if (formContainer?.children[0]) {
-			const inputs = formContainer.children[0].querySelectorAll('input');
-			if (!inputs[0].value && !inputs[1].value) {
-				formContainer.children[0].remove();
-			}
-		}
+		removeEmptyRow();
 		closeDialog();
+	}
+
+	function removeEmptyRow() {
+		const formContainer = document.getElementById('form-container');
+		if (!formContainer?.children[0]) return;
+		const inputs = formContainer.children[0].querySelectorAll('input');
+		if (!inputs[0].value && !inputs[1].value) {
+			formContainer.children[0].remove();
+		}
 	}
 </script>
 
@@ -139,6 +195,8 @@
 				<input
 					type="file"
 					id="file-upload"
+					accept=".csv, .txt, .xls, .xlsx"
+					on:change={handleFileUpload}
 					class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 hover:file:bg-gray-200"
 				/>
 			</div>
@@ -146,7 +204,7 @@
 			<p class="text-center text-gray-600 text-sm mt-1">
 				<strong>Obsługiwane formaty plików:<br /></strong>
 				Microsoft Excel (XLS, XLSX)<br />
-				CSV, TXT (spacje lub przecinki)
+				CSV
 			</p>
 
 			<button
