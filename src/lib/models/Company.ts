@@ -4,5 +4,6 @@ export type Company = {
     address: string;
     nip_value: string;
     regon_value: string;
+    existing: boolean;
 };
 
