@@ -51,13 +51,24 @@ export function generatePDF(result: Result): void {
 	yGlobal += 10
 	doc.text(identifyNumber(result.search.id_value) + ' ' + result.search.id_value, 20, yGlobal);
 	doc.text(formatBankAccount(result.search.bank_account), 75, yGlobal);
-	doc.text(result.company.bank_accounts.includes(result.search.bank_account) ? 'Zgodne': 'Niezgodne', 190, yGlobal, { align: 'right' });
+	doc.text(result.company?.bank_accounts.includes(result.search.bank_account) ? 'Zgodne': 'Niezgodne', 190, yGlobal, { align: 'right' });
 
 
 	// Horizontal line separator
 	doc.setDrawColor(150);
 	yGlobal += 5
 	doc.line(20, yGlobal, 190, yGlobal);
+
+	if (!result.company) {
+		doc.setFontSize(14);
+		doc.setFont(fontBold, 'normal');
+		yGlobal += 10
+		doc.text('Brak danych dla podanego numeru', 20, yGlobal);
+		doc.setFont(font, 'normal');
+		doc.text('Sprawdź poprawność wprowadzonych danych', 20, yGlobal + 10);
+		doc.output('dataurlnewwindow');
+		return;
+	}
 
 	// Add full name
 	doc.setFont(fontBold, 'normal');

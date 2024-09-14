@@ -14,7 +14,7 @@ export async function sendRequest(searches: Search[]): Promise<void> {
                 const response = await call_api(identifyNumber(search.id_value), search.id_value);
                 const data = await response.json();
                 if (response.status !== 200) throw new Error(data.message);
-                if (!data.result.subject) throw new Error("No subject found");
+                if (!data.result.subject) return { search } as Result;
                 const subjectDetails = extractSubjectDetails(data);
 
                 return {
