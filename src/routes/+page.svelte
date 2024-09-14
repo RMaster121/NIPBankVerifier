@@ -88,7 +88,8 @@
 				const sheet = workbook.Sheets[workbook.SheetNames[0]];
 				const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 				rows.forEach((row: any) => {
-					const [id_value, bank_account] = row;
+					console.log(row);
+					const [id_value, bank_account] = row.map((cell: any) => cell.toString());
 					if (id_value && bank_account) {
 						addRow(null, cleanInput(id_value), cleanInput(bank_account));
 					}
