@@ -1,3 +1,4 @@
+import { identifyNumber } from '$lib/utilities/input_type';
 import type { Result } from './../models/Result';
 import jsPDF from 'jspdf';
 import { formatBankAccount } from './format';
@@ -32,8 +33,33 @@ export function generatePDF(result: Result): void {
 	yGlobal += 5
 	doc.line(20, yGlobal, 190, yGlobal);
 
+
+	// Add search parameters
+	doc.setFontSize(14);
+	doc.setFont(fontBold, 'normal');
+	yGlobal += 10
+	doc.text('Parametry zapytania', 20, yGlobal);
+
+	// Add search parameters headers
+	yGlobal += 10
+	doc.text('NIP/REGON', 20, yGlobal);
+	doc.text('Numer konta bankowego', 75, yGlobal);
+	doc.text('Wynik', 190, yGlobal, { align: 'right' });
+
+	// Add search parameters values
+	doc.setFont(font, 'normal');
+	yGlobal += 10
+	doc.text(identifyNumber(result.search.id_value) + ' ' + result.search.id_value, 20, yGlobal);
+	doc.text(formatBankAccount(result.search.bank_account), 75, yGlobal);
+	doc.text(result.company.bank_accounts.includes(result.search.bank_account) ? 'Zgodne': 'Niezgodne', 190, yGlobal, { align: 'right' });
+
+
+	// Horizontal line separator
+	doc.setDrawColor(150);
+	yGlobal += 5
+	doc.line(20, yGlobal, 190, yGlobal);
+
 	// Add full name
-	doc.setFontSize(16);
 	doc.setFont(fontBold, 'normal');
 	yGlobal += 10
 	doc.text('Nazwa podmiotu', 20, yGlobal);
@@ -42,7 +68,7 @@ export function generatePDF(result: Result): void {
 	let splitText = doc.splitTextToSize(result.company.name, 170);
 	yGlobal += 10
 	doc.text(splitText, 20, yGlobal);
-	yGlobal += splitText.length * 5 + 5
+	yGlobal += splitText.length * 5
 
 	// Horizontal line separator
 	doc.setDrawColor(150);
@@ -75,7 +101,6 @@ export function generatePDF(result: Result): void {
 
 	// Add bank accounts
 	doc.setFont(font, 'normal');
-	doc.setFontSize(14);
 
 	// Dynamically add each bank account
 	let yIndex = yGlobal + 10;
