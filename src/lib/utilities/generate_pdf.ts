@@ -51,7 +51,7 @@ export function generatePDF(result: Result): void {
 	yGlobal += 10
 	doc.text(identifyNumber(result.search.id_value) + ' ' + result.search.id_value, 20, yGlobal);
 	doc.text(formatBankAccount(result.search.bank_account), 75, yGlobal);
-	doc.text(result.company.bank_accounts?.includes(result.search.bank_account) ? 'Zgodne': 'Niezgodne', 190, yGlobal, { align: 'right' });
+	doc.text(result.company?.bank_accounts.includes(result.search.bank_account) ? 'Zgodne': 'Niezgodne', 190, yGlobal, { align: 'right' });
 
 
 	// Horizontal line separator
@@ -59,7 +59,7 @@ export function generatePDF(result: Result): void {
 	yGlobal += 5
 	doc.line(20, yGlobal, 190, yGlobal);
 
-	if (!result.company.existing) {
+	if (!result.company) {
 		doc.setFontSize(14);
 		doc.setFont(fontBold, 'normal');
 		yGlobal += 10

@@ -6,6 +6,9 @@
 	function exportToExcel() {
 		let dataToWrite = [];
 		for (let i in data.result) {
+			if (!data.result[i].company) {
+				continue;
+			}
 			dataToWrite.push({
 				'Lp.': parseInt(i) + 1,
 				'Nazwa': data.result[i].company.name,
