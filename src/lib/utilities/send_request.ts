@@ -7,6 +7,7 @@ import { extractSubjectDetails } from "$lib/utilities/extract_response";
 import { identifyNumber } from "./input_type";
 
 export async function sendRequest(searches: Search[]): Promise<void> {
+    const emptyField = 'Brak danych';
     try {
         const results = await Promise.all(
             searches.map(async (search) => {
@@ -21,9 +22,9 @@ export async function sendRequest(searches: Search[]): Promise<void> {
                     company: {
                         bank_accounts: subjectDetails.accountNumbers || [],
                         name: subjectDetails.name,
-                        address: subjectDetails.workingAddress,
-                        nip_value: subjectDetails.nip,
-                        regon_value: subjectDetails.regon
+                        address: subjectDetails.workingAddress || subjectDetails.residenceAddress || emptyField,
+                        nip_value: subjectDetails.nip || emptyField,
+                        regon_value: subjectDetails.regon || emptyField,
                     }
                 } as Result;
             })
