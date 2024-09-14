@@ -1,6 +1,33 @@
 <script lang="ts">
 	import type { Result } from '$lib/models/Result';
 	import EntityCard from '$lib/components/EntityCard.svelte';
+	import * as XLSX from 'xlsx';
+
+	function exportToExcel() {
+		let dataToWrite = [];
+		for (let i in data.result) {
+			dataToWrite.push({
+				'Lp.': parseInt(i) + 1,
+				'Nazwa': data.result[i].company.name,
+				'Miasto': data.result[i].company.address.split(' ').at(-1),
+				'NIP': data.result[i].company.nip_value,
+				'Konto bankowe': data.result[i].search.bank_account,
+				'Status zgodności konta': data.result[i].company.bank_accounts.includes(data.result[i].search.bank_account) ? 'Zgodne' : 'Niezgodne',
+			});
+		}
+		const ws = XLSX.utils.json_to_sheet(dataToWrite);
+		ws['!cols'] = [
+			{ wch: 5 },
+			{ wch: 30 },
+			{ wch: 10 },
+			{ wch: 10 },
+			{ wch: 26 },
+			{ wch: 20 },
+		];
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, 'Wyniki werfikacji');
+		XLSX.writeFile(wb, `wyniki_weryfikacji_${new Date().toISOString().split('T')[0]}.xlsx`);
+	}
 
 	export let data: { result: Result[] };
 </script>
@@ -25,7 +52,7 @@
 			</div>
 				<button
 					class="bg-blue-500 text-white m-3 py-2 px-4 rounded-md hover:bg-blue-700 transition-all duration-300 flex items-center"
-					on:click={null}
+					on:click={exportToExcel}
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
