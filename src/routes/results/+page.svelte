@@ -48,7 +48,7 @@
 						<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
 					</svg>
 				</button>
-				<h1 class="text-xl font-bold">Wyniki wyszukiwania</h1>
+				<h1 class="text-xl font-bold">Wyniki weryfikacji</h1>
 			</div>
 				<button
 					class="bg-blue-500 text-white m-3 py-2 px-4 rounded-md hover:bg-blue-700 transition-all duration-300 flex items-center"
