@@ -19,11 +19,10 @@ export function generatePDF(result: Result): void {
 
 	// Set the title
 	doc.setFont(fontBold, 'normal');
-	doc.setFontSize(20);
+	doc.setFontSize(12);
 	doc.text('Raport - weryfikacja danych podmiotu', 20, yGlobal);
 
 	// Add the date
-	doc.setFontSize(14);
 	doc.setFont(font, 'normal');
 	yGlobal += 8
 	doc.text(`Data: ${new Date().toLocaleDateString()}`, 20, yGlobal);
@@ -35,7 +34,6 @@ export function generatePDF(result: Result): void {
 
 
 	// Add search parameters
-	doc.setFontSize(14);
 	doc.setFont(fontBold, 'normal');
 	yGlobal += 10
 	doc.text('Parametry zapytania', 20, yGlobal);
@@ -60,7 +58,6 @@ export function generatePDF(result: Result): void {
 	doc.line(20, yGlobal, 190, yGlobal);
 
 	if (!result.company) {
-		doc.setFontSize(14);
 		doc.setFont(fontBold, 'normal');
 		yGlobal += 10
 		doc.text('Brak danych dla podanego numeru', 20, yGlobal);
@@ -75,7 +72,6 @@ export function generatePDF(result: Result): void {
 	yGlobal += 10
 	doc.text('Nazwa podmiotu', 20, yGlobal);
 	doc.setFont(font, 'normal');
-	doc.setFontSize(18);
 	let splitText = doc.splitTextToSize(result.company.name, 170);
 	yGlobal += 10
 	doc.text(splitText, 20, yGlobal);
@@ -86,7 +82,6 @@ export function generatePDF(result: Result): void {
 	doc.line(20, yGlobal, 190, yGlobal);
 
 	// Add NIP, REGON, and address header
-	doc.setFontSize(14);
 	doc.setFont(fontBold, 'normal');
 	yGlobal += 10
 	doc.text('NIP', 20, yGlobal);
@@ -98,8 +93,12 @@ export function generatePDF(result: Result): void {
 	doc.setFont(font, 'normal');
 	doc.text(result.company.nip_value, 20, yGlobal);
 	doc.text(result.company.regon_value, 60, yGlobal);
-	doc.text(result.company.address, 110, yGlobal);
-
+	let splitAddress = result.company.address.split(',');
+	let splitTextAddress = doc.splitTextToSize(splitAddress[0], 170);
+	doc.text(splitTextAddress, 110, yGlobal);
+	yGlobal += splitTextAddress.length * 5;
+	doc.text(splitAddress[1], 110, yGlobal);
+	
 	// Horizontal line separator
 	yGlobal += 5
 	doc.setDrawColor(150);
@@ -117,7 +116,7 @@ export function generatePDF(result: Result): void {
 	let yIndex = yGlobal + 10;
 	for (let i in result.company.bank_accounts) {
 		const account = result.company.bank_accounts[i];
-		if (account == result.search.bank_account && result.company.bank_accounts.length > 1) {
+		if (account == result.search.bank_account) {
 			doc.setFont(fontBold, 'normal');
 			doc.text(`- ${formatBankAccount(account)}`, 20, yIndex);
 			doc.setFont(font, 'normal');
