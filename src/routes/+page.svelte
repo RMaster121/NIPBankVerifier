@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Search } from '$lib/models/Search';
+	import { identifyNumber } from '$lib/utilities/input_type';
 	import { sendRequest } from '$lib/utilities/send_request';
 	import toast from 'svelte-french-toast';
 	import * as XLSX from 'xlsx';
@@ -29,7 +30,7 @@
 			}
 		});
 		if (searches.length === 0) {
-			toast.error('Wprowadź przynajmniej jeden podmiot do weryfikacji');
+			toast.error('Wprowadź przynajmniej jedną parę (podmiot - konto) do weryfikacji');
 			return;
 		}
 		sendRequest(searches);
@@ -96,7 +97,7 @@
 					console.log(row);
 					const [id_value, bank_account] = row.map((cell: any) => cell.toString());
 					if (id_value && bank_account) {
-						addRow(null, cleanInput(id_value), cleanInput(bank_account));
+						addRow(null, id_value, bank_account);
 					}
 				});
 			};
@@ -125,7 +126,7 @@
 		rows.forEach((row) => {
 			const [id_value, bank_account] = row.split('\t');
 			if (id_value && bank_account) {
-				addRow(null, cleanInput(id_value), cleanInput(bank_account));
+				addRow(null, id_value, bank_account);
 			}
 		});
 		removeEmptyRow();
@@ -141,30 +142,44 @@
 			formContainer.children[0].remove();
 		}
 	}
+
+	function validateNipRegon(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const cleanValue = cleanInput(input.value);
+		if (!/^\d+$/.test(cleanValue)) {
+			input.setCustomValidity('NIP/REGON może zawierać tylko cyfry');
+			return;
+		}
+		if (identifyNumber(cleanValue) === 'Unknown') {
+			input.setCustomValidity('Nieprawidłowy NIP/REGON');
+			return;
+		}
+		input.setCustomValidity('');
+	}
+
 </script>
 
 <div class="container mx-auto p-4">
 	<h1 class="text-xl font-bold mb-4">Zweryfikuj podmiot</h1>
 	<div class="max-w-4xl mx-auto my-10 p-6 bg-white rounded-lg shadow-lg">
 		<h1 class="text-2xl font-bold text-center mb-6">Wprowadź NIP i konto bankowe podmiotu</h1>
-		<div id="form-container" class="space-y-4">
+		<form id="form-container" class="space-y-4" on:submit|preventDefault={handleSubmit}>
 			<div class="flex space-x-4 items-center">
-				<input type="text" placeholder="Wprowadź NIP/REGON" />
+				<input type="text" placeholder="Wprowadź NIP/REGON" on:input={validateNipRegon} />
 				<input type="text" placeholder="Wprowadź numer konta bankowego" />
 				<button class="bg-red-500 hover:bg-red-600" on:click={removeRow}>Usuń</button>
 			</div>
-		</div>
+		</form>
 
 		<div class="flex justify-between mt-6">
 			<div class="space-x-4">
 				<button class="blue-button" on:click={addRow}>Dodaj podmiot</button>
 				<button id="import-excel" on:click={openDialog}>Importuj z Excela</button>
 			</div>
-			<button class="blue-button" on:click={handleSubmit}>Zweryfikuj</button>
+			<button type="submit" class="blue-button" form="form-container">Zweryfikuj</button>
 		</div>
 	</div>
 </div>
-
 {#if showDialog}
 	<button class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50" on:click={closeDialog}
 	></button>

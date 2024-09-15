@@ -37,7 +37,6 @@ export async function sendRequest(searches: Search[]): Promise<void> {
             error: 'Błąd weryfikacji danych'
         });
         apiResult.set(results);
-        console.log("Results:", results);
         goto("/results/");
     } catch (error) {
         console.error("Error fetching results:", error);
