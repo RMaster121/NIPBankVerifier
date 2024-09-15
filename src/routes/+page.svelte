@@ -2,6 +2,7 @@
 	import type { Search } from '$lib/models/Search';
 	import { identifyNumber } from '$lib/utilities/input_type';
 	import { sendRequest } from '$lib/utilities/send_request';
+	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import * as XLSX from 'xlsx';
 	let showDialog = false;
@@ -157,6 +158,12 @@
 		input.setCustomValidity('');
 	}
 
+	let firstRowInputId: HTMLInputElement;
+
+	onMount(() => {
+		firstRowInputId.focus();
+	});
+
 </script>
 
 <div class="container mx-auto p-4">
@@ -165,7 +172,7 @@
 		<h1 class="text-2xl font-bold text-center mb-6">Wprowadź NIP i konto bankowe podmiotu</h1>
 		<form id="form-container" class="space-y-4" on:submit|preventDefault={handleSubmit}>
 			<div class="flex space-x-4 items-center">
-				<input type="text" placeholder="Wprowadź NIP/REGON" on:input={validateNipRegon} />
+				<input id="firstRowIdNumber" type="text" placeholder="Wprowadź NIP/REGON" on:input={validateNipRegon} bind:this={firstRowInputId} />
 				<input type="text" placeholder="Wprowadź numer konta bankowego" />
 				<button class="bg-red-500 hover:bg-red-600" on:click={removeRow}>Usuń</button>
 			</div>
