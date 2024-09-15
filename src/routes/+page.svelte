@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Search } from '$lib/models/Search';
 	import { sendRequest } from '$lib/utilities/send_request';
+	import toast from 'svelte-french-toast';
 	import * as XLSX from 'xlsx';
 	let showDialog = false;
 
@@ -27,6 +28,10 @@
 				searches.push({ id_value, bank_account });
 			}
 		});
+		if (searches.length === 0) {
+			toast.error('Wprowadź przynajmniej jeden podmiot do weryfikacji');
+			return;
+		}
 		sendRequest(searches);
 	}
 
@@ -111,6 +116,7 @@
 		}
 		removeEmptyRow();
 		closeDialog();
+		toast.success('Plik został zaimportowany');
 	}
 
 	function importExcel() {
@@ -124,6 +130,7 @@
 		});
 		removeEmptyRow();
 		closeDialog();
+		toast.success('Dane zostały zaimportowane');
 	}
 
 	function removeEmptyRow() {

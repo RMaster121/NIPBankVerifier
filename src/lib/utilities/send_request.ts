@@ -4,12 +4,14 @@ import type { Search } from "$lib/models/Search";
 import { apiResult } from "$lib/store";
 import { call_api } from "$lib/utilities/call_api";
 import { extractSubjectDetails } from "$lib/utilities/extract_response";
+import toast from "svelte-french-toast";
 import { identifyNumber } from "./input_type";
 
 export async function sendRequest(searches: Search[]): Promise<void> {
     const emptyField = 'Brak danych';
     try {
-        const results = await Promise.all(
+        const results = await toast.promise(
+         Promise.all(
             searches.map(async (search) => {
                 const response = await call_api(identifyNumber(search.id_value), search.id_value);
                 const data = await response.json();
@@ -28,9 +30,14 @@ export async function sendRequest(searches: Search[]): Promise<void> {
                     }
                 } as Result;
             })
-        );
-
+        ),
+        {
+            loading: 'Werifikacja danych...',
+            success: 'Dane zweryfikowane',
+            error: 'Błąd weryfikacji danych'
+        });
         apiResult.set(results);
+        console.log("Results:", results);
         goto("/results/");
     } catch (error) {
         console.error("Error fetching results:", error);
