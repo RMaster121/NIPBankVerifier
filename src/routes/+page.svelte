@@ -63,26 +63,12 @@
 		(event.target as HTMLButtonElement).parentElement?.remove();
 	}
 
-	function handleCSVUpload(event: Event) {
-		const file = (event.target as HTMLInputElement).files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				const data = e.target?.result as string;
-				const rows = data.split('\n');
-				rows.forEach((row) => {
-					console.log(row);
-					const columns = row.split(/[,;:]/);
-					console.log(columns);
-					if (columns.length >= 2) {
-						const id_value = cleanInput(columns[0]);
-						const bank_account = cleanInput(columns[1]);
-						addRow(null, id_value, bank_account);
-					}
-				});
-			};
-			reader.readAsText(file);
-		}
+	function checkIfTemplateIsCorrect(rows: string[][]): boolean {
+		if (rows.length === 0) {};
+		const [header, ...data] = rows;
+		if (header.length !== 2) return false;
+		if (header[0] !== 'NIP/REGON' || header[1] !== 'Numer konta bankowego') return false;
+		return true;
 	}
 
 	function handleXLSXUpload(event: Event) {
@@ -93,14 +79,20 @@
 				const data = e.target?.result as ArrayBuffer;
 				const workbook = XLSX.read(data, { type: 'array' });
 				const sheet = workbook.Sheets[workbook.SheetNames[0]];
-				const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-				rows.forEach((row: any) => {
-					console.log(row);
-					const [id_value, bank_account] = row.map((cell: any) => cell.toString());
+				const rows: string[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+				if (!checkIfTemplateIsCorrect(rows)) {
+					toast.error('Nieprawidłowy format pliku. Zaimportuj plik w formacie zgodnym z szablonem');
+					return;
+				}
+				rows.shift();
+				rows.forEach((row) => {
+					const [id_value, bank_account] = row;
 					if (id_value && bank_account) {
 						addRow(null, id_value, bank_account);
 					}
 				});
+				toast.success('Plik został zaimportowany');
+				removeEmptyRow();
 			};
 			reader.readAsArrayBuffer(file);
 		}
@@ -110,22 +102,25 @@
 		const file = (event.target as HTMLInputElement).files?.[0];
 		if (file) {
 			const extension = file.name.split('.').pop();
-			if (extension === 'csv' || extension === 'txt') {
-				handleCSVUpload(event);
-			} else if (extension === 'xls' || extension === 'xlsx') {
-				handleXLSXUpload(event);
+			if (extension !== 'xls' && extension !== 'xlsx') {
+				toast.error('Nieprawidłowy format pliku. Zaimportuj plik w formacie XLS lub XLSX');
+				return;
 			}
+			handleXLSXUpload(event);
 		}
-		removeEmptyRow();
 		closeDialog();
-		toast.success('Plik został zaimportowany');
 	}
 
 	function importExcel() {
 		const excelData = (document.getElementById('excel-data') as HTMLTextAreaElement).value;
-		const rows = excelData.split('\n');
+		const rows = excelData.split('\n').map((row) => row.split('\t'));
+		if (!checkIfTemplateIsCorrect(rows)) {
+			toast.error('Nieprawidłowy format pliku. Zaimportuj plik w formacie zgodnym z szablonem');
+			return;
+		}
+		rows.shift();
 		rows.forEach((row) => {
-			const [id_value, bank_account] = row.split('\t');
+			const [id_value, bank_account] = row;
 			if (id_value && bank_account) {
 				addRow(null, id_value, bank_account);
 			}
@@ -240,8 +235,7 @@
 
 			<textarea
 				class="mt-4 w-full h-24 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-				placeholder="Wklej dane z Excela w formacie 
-| NIP/REGON | Numer konta bankowego |"
+				placeholder="Wklej dane z Excela w formacie zgodnym z szablonem"
 				id="excel-data"
 			></textarea>
 
@@ -251,7 +245,7 @@
 				<input
 					type="file"
 					id="file-upload"
-					accept=".csv, .txt, .xls, .xlsx"
+					accept=".xls, .xlsx"
 					on:change={handleFileUpload}
 					class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 hover:file:bg-gray-200"
 				/>
