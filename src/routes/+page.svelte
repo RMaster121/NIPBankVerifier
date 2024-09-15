@@ -158,6 +158,16 @@
 		input.setCustomValidity('');
 	}
 
+	function generateTemplate() {
+		const ws = XLSX.utils.json_to_sheet([
+			{ 'NIP/REGON': '', 'Numer konta bankowego': '' },
+		]);
+		ws['!cols'] = [{ wch: 20 }, { wch: 30 }];
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, 'Szablon');
+		XLSX.writeFile(wb, 'szablon.xlsx');
+	}
+
 	let firstRowInputId: HTMLInputElement;
 
 	onMount(() => {
@@ -172,7 +182,13 @@
 		<h1 class="text-2xl font-bold text-center mb-6">Wprowadź NIP i konto bankowe podmiotu</h1>
 		<form id="form-container" class="space-y-4" on:submit|preventDefault={handleSubmit}>
 			<div class="flex space-x-4 items-center">
-				<input id="firstRowIdNumber" type="text" placeholder="Wprowadź NIP/REGON" on:input={validateNipRegon} bind:this={firstRowInputId} />
+				<input
+					id="firstRowIdNumber"
+					type="text"
+					placeholder="Wprowadź NIP/REGON"
+					on:input={validateNipRegon}
+					bind:this={firstRowInputId}
+				/>
 				<input type="text" placeholder="Wprowadź numer konta bankowego" />
 				<button class="bg-red-500 hover:bg-red-600" on:click={removeRow}>Usuń</button>
 			</div>
@@ -215,6 +231,13 @@
 				Wklej dane z Excela lub wybierz plik do importu
 			</p>
 
+			<button
+				on:click={generateTemplate}
+				class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-center"
+			>
+				Pobierz szablon
+			</button>
+
 			<textarea
 				class="mt-4 w-full h-24 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 				placeholder="Wklej dane z Excela w formacie 
@@ -235,9 +258,8 @@
 			</div>
 
 			<p class="text-center text-gray-600 text-sm mt-1">
-				<strong>Obsługiwane formaty plików:<br /></strong>
-				Microsoft Excel (XLS, XLSX)<br />
-				CSV
+				<strong>Obsługiwany format plików<br /></strong>
+				Microsoft Excel (XLS, XLSX)
 			</p>
 
 			<button
