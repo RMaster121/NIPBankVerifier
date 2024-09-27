@@ -51,15 +51,24 @@
 </script>
 
 <div
-	class={`flex flex-row items-center p-4 rounded-lg py-1 ${get_color(result)} border border-gray-300`}
+	class={`flex flex-row items-center p-4 rounded-lg py-1 ${get_color(result)} border border-gray-300  min-h-20`}
 >
 	<div class="flex flex-col w-2/5">
-		<p class="font-bold">
-			{identifyNumber(result.search.id_value)}
-			{identifyNumber(result.search.id_value) == 'NIP'
-				? formatNIP(result.search.id_value)
-				: result.search.id_value}
-		</p>
+			{#if result.search.id_value}
+				<p class="font-bold">
+					{identifyNumber(result.search.id_value)}
+					{identifyNumber(result.search.id_value) == 'NIP'
+						? formatNIP(result.search.id_value)
+						: result.search.id_value}
+				</p>
+			{:else}
+				 {#if result.company}
+					<p class="font-bold">
+						NIP {result.company.nip_value}
+						REGON {result.company.regon_value}
+					</p>
+				 {/if}
+			{/if}
 		{#if result.company}
 			<p class="mb-1 mt-1">{result.company.name}</p>
 			<p>{result.company.address}</p>
