@@ -16,13 +16,10 @@ export async function sendRequest(searches: Search[]): Promise<void> {
                 const searchData = search.id_value || search.bank_account;
                 const response = await call_api(identifyNumber(searchData), searchData );
                 const data = await response.json();
-                console.log('adas data ',data);
-
                 const subject = data.result.subject || data.result.subjects[0];
                 if (response.status !== 200) throw new Error(data.message);
                 if (!subject) return { search } as Result;
                 const subjectDetails = extractSubjectDetails(subject);
-                console.log('adas ',subjectDetails);
 
                 return {
                     search,
