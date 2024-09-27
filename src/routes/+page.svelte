@@ -153,6 +153,20 @@
 		input.setCustomValidity('');
 	}
 
+	function validateBankAccount(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const cleanValue = cleanInput(input.value);
+		if (!/^\d+$/.test(cleanValue)) {
+			input.setCustomValidity('Numer konta bankowego może zawierać tylko cyfry');
+			return;
+		}
+		if (identifyNumber(cleanValue) !== 'bank-account') {
+			input.setCustomValidity('Numer konta bankowego musi składać się z 26 cyfr');
+			return;
+		}
+		input.setCustomValidity('');
+	}
+
 	function generateTemplate() {
 		const ws = XLSX.utils.json_to_sheet([
 			{ 'NIP/REGON': '', 'Numer konta bankowego': '' },
@@ -184,7 +198,11 @@
 					on:input={validateNipRegon}
 					bind:this={firstRowInputId}
 				/>
-				<input type="text" placeholder="Wprowadź numer konta bankowego" />
+				<input 
+					type="text"
+					placeholder="Wprowadź numer konta bankowego"
+					on:input={validateBankAccount}	
+				/>
 				<button class="bg-red-500 hover:bg-red-600" on:click={removeRow}>Usuń</button>
 			</div>
 		</form>
