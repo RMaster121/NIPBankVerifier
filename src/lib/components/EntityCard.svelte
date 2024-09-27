@@ -54,22 +54,16 @@
 	class={`flex flex-row items-center p-4 rounded-lg py-1 ${get_color(result)} border border-gray-300`}
 >
 	<div class="flex flex-col w-2/5">
+		<p class="font-bold">
+			{identifyNumber(result.search.id_value)}
+			{identifyNumber(result.search.id_value) == 'NIP'
+				? formatNIP(result.search.id_value)
+				: result.search.id_value}
+		</p>
 		{#if result.company}
-			<p class="font-bold">
-				{identifyNumber(result.search.id_value)}
-				{identifyNumber(result.search.id_value) == 'NIP'
-					? formatNIP(result.search.id_value)
-					: result.search.id_value}
-			</p>
 			<p class="mb-1 mt-1">{result.company.name}</p>
 			<p>{result.company.address}</p>
 		{:else}
-			<p class="font-bold">
-				{identifyNumber(result.search.id_value)}
-				{identifyNumber(result.search.id_value) == 'NIP'
-					? formatNIP(result.search.id_value)
-					: result.search.id_value}
-			</p>
 			<p class="font-bold">Podmiot nie istnieje</p>
 		{/if}
 	</div>
