@@ -30,6 +30,16 @@ describe('identifyNumber', () => {
         });
     });
 
+    describe('Bank Account', () => {
+        it('should identify a valid bank account number', () => {
+            expect(identifyNumber('12345678901234567890123456')).toBe('bank-account');
+        });
+
+        it('should return "Unknown" for an invalid bank account number - too long', () => {
+            expect(identifyNumber('123456789012345678901234571')).toBe('Unknown');
+        });
+    });
+
     describe('Invalid Length', () => {
         it('should return "Unknown" for a number with invalid length', () => {
             expect(identifyNumber('123')).toBe('Unknown');
