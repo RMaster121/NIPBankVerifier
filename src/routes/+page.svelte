@@ -26,7 +26,7 @@
 			const inputs = row.querySelectorAll('input');
 			const id_value = cleanInput(inputs[0].value);
 			const bank_account = cleanInput(inputs[1].value);
-			if (id_value && bank_account) {
+			if (id_value || bank_account) {
 				searches.push({ id_value, bank_account });
 			}
 		});
@@ -54,6 +54,12 @@
 			inputs[0].value = id_value;
 			inputs[1].value = bank_account;
 		}
+
+		const nipRegonInput = newRow.querySelectorAll('input')[0];
+		nipRegonInput?.addEventListener('input', validateNipRegon);
+
+		const bankAccountInput = newRow.querySelectorAll('input')[1];
+		bankAccountInput?.addEventListener('input', validateBankAccount);
 
 		const removeButton = newRow.querySelector('button');
 		removeButton?.addEventListener('click', removeRow);
@@ -142,6 +148,10 @@
 	function validateNipRegon(event: Event) {
 		const input = event.target as HTMLInputElement;
 		const cleanValue = cleanInput(input.value);
+		if (input.value.length === 0) {
+			input.setCustomValidity('');
+			return;
+		}
 		if (!/^\d+$/.test(cleanValue)) {
 			input.setCustomValidity('NIP/REGON może zawierać tylko cyfry');
 			return;
@@ -156,6 +166,10 @@
 	function validateBankAccount(event: Event) {
 		const input = event.target as HTMLInputElement;
 		const cleanValue = cleanInput(input.value);
+		if (input.value.length === 0) {
+			input.setCustomValidity('');
+			return;
+		}
 		if (!/^\d+$/.test(cleanValue)) {
 			input.setCustomValidity('Numer konta bankowego może zawierać tylko cyfry');
 			return;
