@@ -77,7 +77,7 @@
 		{/if}
 	</div>
 	<div class="mt-2 sm:mt-0 w-3/5">
-		<p class="text-lg font-semibold">Numer konta {formatBankAccount(result.search.bank_account)}</p>
+		<p class="text-lg font-semibold">Numer konta {formatBankAccount(result.search.bank_account) || '- Nie wypełniono' }</p>
 		{#if result.company}
 			<p>{bank_status(result)}</p>
 		{/if}
