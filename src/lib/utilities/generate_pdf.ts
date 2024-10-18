@@ -4,8 +4,9 @@ import jsPDF from 'jspdf';
 import { formatBankAccount } from './format';
 import { callAddFont } from '$lib/Roboto-Regular-normal';
 import { callAddFontBold } from '$lib/Roboto-Bold-normal';
+import type { EntityCardProperties } from '$lib/models/EntityCardProperties';
 
-export function generatePDF(result: Result): void {
+export function generatePDF(result: Result, cardEntity: EntityCardProperties): void {
 	jsPDF.API.events.push(['addFonts', callAddFont]);
 	jsPDF.API.events.push(['addFonts', callAddFontBold]);
 
@@ -47,9 +48,9 @@ export function generatePDF(result: Result): void {
 	// Add search parameters values
 	doc.setFont(font, 'normal');
 	yGlobal += 10
-	doc.text(identifyNumber(result.search.id_value) + ' ' + result.search.id_value, 20, yGlobal);
+	doc.text(cardEntity.get_company_number(), 20, yGlobal);
 	doc.text(formatBankAccount(result.search.bank_account), 75, yGlobal);
-	doc.text(result.company?.bank_accounts.includes(result.search.bank_account) ? 'Zgodne': 'Niezgodne', 190, yGlobal, { align: 'right' });
+	doc.text(cardEntity.status, 190, yGlobal, { align: 'right' });
 
 
 	// Horizontal line separator
