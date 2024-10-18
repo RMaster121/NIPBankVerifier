@@ -48,8 +48,10 @@ export function generatePDF(result: Result, cardEntity: EntityCardProperties): v
 	// Add search parameters values
 	doc.setFont(font, 'normal');
 	yGlobal += 10
-	doc.text(cardEntity.get_company_number(), 20, yGlobal);
-	doc.text(formatBankAccount(result.search.bank_account), 75, yGlobal);
+	let nipInputExist = result.search.id_value != '';
+	let bankInputExist = result.search.bank_account != '';
+	doc.text(nipInputExist ? cardEntity.get_company_number() : "Nie wypełniono", 20, yGlobal);
+	doc.text(bankInputExist ? formatBankAccount(result.search.bank_account) : "Nie wypełniono", 75, yGlobal);
 	doc.text(cardEntity.status, 190, yGlobal, { align: 'right' });
 
 
