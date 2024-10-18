@@ -9,29 +9,36 @@
 			if (!data.result[i].company) {
 				dataToWrite.push({
 					'Lp.': parseInt(i) + 1,
-					'Nazwa': 'Brak danych',
-					'Miasto': 'Brak danych',
-					'NIP': data.result[i].search.id_value,
+					Nazwa: 'Brak danych',
+					Miasto: 'Brak danych',
+					NIP: data.result[i].search.id_value,
 					'Konto bankowe': data.result[i].search.bank_account,
 					'Status zgodności konta': 'Brak danych'
 				});
 			} else {
+				let dataStatus = '';
+				if (data.result[i].search.id_value == '' || data.result[i].search.bank_account == '') {
+					dataStatus = "Do weryfikacji"
+				} else if (
+					data.result[i].company.bank_accounts.includes(data.result[i].search.bank_account)
+				) {
+					dataStatus = 'Zgodne';
+				} else {
+					dataStatus = 'Niezgodne';
+				}
 				dataToWrite.push({
 					'Lp.': parseInt(i) + 1,
 					'Nazwa': data.result[i].company.name,
 					'Miasto': data.result[i].company.address.split(' ').at(-1),
 					'NIP': data.result[i].company.nip_value,
-					'Konto bankowe': data.result[i].search.bank_account,
-					'Status zgodności konta': data.result[i].company.bank_accounts.includes(
-						data.result[i].search.bank_account
-					)
-						? 'Zgodne'
-						: 'Niezgodne'
+					'Wyszukany NIP/REGON': data.result[i].search.id_value || 'Nie podano',
+					'Wyszukane konto bankowe': data.result[i].search.bank_account || 'Nie podano',
+					'Status zgodności konta': dataStatus
 				});
 			}
 		}
 		const ws = XLSX.utils.json_to_sheet(dataToWrite);
-		ws['!cols'] = [{ wch: 5 }, { wch: 30 }, { wch: 10 }, { wch: 10 }, { wch: 26 }, { wch: 20 }];
+		ws['!cols'] = [{ wch: 5 }, { wch: 30 }, { wch: 10 }, { wch: 10 }, { wch: 20 }, { wch: 30 }, { wch: 20 }];
 		const wb = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(wb, ws, 'Wyniki werfikacji');
 		XLSX.writeFile(wb, `wyniki_weryfikacji_${new Date().toISOString().split('T')[0]}.xlsx`);
