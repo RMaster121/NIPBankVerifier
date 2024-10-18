@@ -55,6 +55,10 @@ function isShortREGON(number: string): boolean {
 function isNIP(number: string): boolean {
 	return number.length === 10 && validateNIPChecksum(number);
 }
+function isBankAccount(number: string): boolean {
+	//TODO: Implement bank account validation - better than now
+	return number.length === 26;
+}
 
 export function identifyNumber(number: string): string {
 	if (isLongREGON(number) || isShortREGON(number)) {
@@ -62,6 +66,9 @@ export function identifyNumber(number: string): string {
 	}
 	if (isNIP(number)) {
 		return 'NIP';
+	}
+	if (isBankAccount(number)) {
+		return 'bank-account';
 	}
 	return 'Unknown';
 }

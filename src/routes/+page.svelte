@@ -26,7 +26,7 @@
 			const inputs = row.querySelectorAll('input');
 			const id_value = cleanInput(inputs[0].value);
 			const bank_account = cleanInput(inputs[1].value);
-			if (id_value && bank_account) {
+			if (id_value || bank_account) {
 				searches.push({ id_value, bank_account });
 			}
 		});
@@ -54,6 +54,12 @@
 			inputs[0].value = id_value;
 			inputs[1].value = bank_account;
 		}
+
+		const nipRegonInput = newRow.querySelectorAll('input')[0];
+		nipRegonInput?.addEventListener('input', validateNipRegon);
+
+		const bankAccountInput = newRow.querySelectorAll('input')[1];
+		bankAccountInput?.addEventListener('input', validateBankAccount);
 
 		const removeButton = newRow.querySelector('button');
 		removeButton?.addEventListener('click', removeRow);
@@ -142,12 +148,34 @@
 	function validateNipRegon(event: Event) {
 		const input = event.target as HTMLInputElement;
 		const cleanValue = cleanInput(input.value);
+		if (input.value.length === 0) {
+			input.setCustomValidity('');
+			return;
+		}
 		if (!/^\d+$/.test(cleanValue)) {
 			input.setCustomValidity('NIP/REGON może zawierać tylko cyfry');
 			return;
 		}
 		if (identifyNumber(cleanValue) === 'Unknown') {
 			input.setCustomValidity('Nieprawidłowy NIP/REGON');
+			return;
+		}
+		input.setCustomValidity('');
+	}
+
+	function validateBankAccount(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const cleanValue = cleanInput(input.value);
+		if (input.value.length === 0) {
+			input.setCustomValidity('');
+			return;
+		}
+		if (!/^\d+$/.test(cleanValue)) {
+			input.setCustomValidity('Numer konta bankowego może zawierać tylko cyfry');
+			return;
+		}
+		if (identifyNumber(cleanValue) !== 'bank-account') {
+			input.setCustomValidity('Numer konta bankowego musi składać się z 26 cyfr');
 			return;
 		}
 		input.setCustomValidity('');
@@ -184,7 +212,11 @@
 					on:input={validateNipRegon}
 					bind:this={firstRowInputId}
 				/>
-				<input type="text" placeholder="Wprowadź numer konta bankowego" />
+				<input 
+					type="text"
+					placeholder="Wprowadź numer konta bankowego"
+					on:input={validateBankAccount}	
+				/>
 				<button class="bg-red-500 hover:bg-red-600" on:click={removeRow}>Usuń</button>
 			</div>
 		</form>

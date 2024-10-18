@@ -13,11 +13,13 @@ export async function sendRequest(searches: Search[]): Promise<void> {
         const results = await toast.promise(
          Promise.all(
             searches.map(async (search) => {
-                const response = await call_api(identifyNumber(search.id_value), search.id_value);
+                const searchData = search.id_value || search.bank_account;
+                const response = await call_api(identifyNumber(searchData), searchData );
                 const data = await response.json();
+                const subject = data.result.subject || data.result.subjects[0];
                 if (response.status !== 200) throw new Error(data.message);
-                if (!data.result.subject) return { search } as Result;
-                const subjectDetails = extractSubjectDetails(data);
+                if (!subject) return { search } as Result;
+                const subjectDetails = extractSubjectDetails(subject);
 
                 return {
                     search,
