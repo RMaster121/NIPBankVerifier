@@ -1,5 +1,5 @@
-export function extractSubjectDetails(response) {
-	const { name, nip, workingAddress, residenceAddress, regon, accountNumbers } = response.result.subject;
+export function extractSubjectDetails(subject) {
+	const { name, nip, workingAddress, residenceAddress, regon, accountNumbers } = subject;
 
 	return {
 		name,
